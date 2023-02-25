@@ -1,44 +1,59 @@
 import { useState } from 'react';
 import './App.css';
 
-function App() {
-  const [image, setImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
-  const onDragOver = (ev: any) => {
-    ev.preventDefault();
-  };
+import { getTags } from './api';
+import { blobToBase64 } from './utils';
 
-  const onDrop = (ev: any) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+import Tags from './components/Tags';
+import FileInput from './components/FileInput';
+import InputGroup from './components/InputGroup';
 
-    handleFile(ev.dataTransfer.files[0]);
-  };
+export default function App() {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-  const handleFile = (file) => {
-    //you can carry out any file validations here...
-    setImage(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  };
+  const [file, setFile] = useState<Object>({});
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
 
-  const onUploadButtonClick = () => {
-    console.log('click');
+  const handleFile = (file: Object) => {
+    setFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const onCancel = () => {
-    setPreviewUrl('');
-    setImage(null);
+    setFile({});
+    setImagePreview('');
+    setTags([]);
   };
 
-  const onGenerateTags = () => {};
+  const onGenerateTags = async () => {
+    const imgUrl = await blobToBase64(imagePreview);
+    const res = await getTags(imgUrl, { username, password });
+    setTags(res);
+  };
 
   return (
     <div className='App'>
+      <ToastContainer
+        position='bottom-center'
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover={false}
+        theme='dark'
+      />
       <h1>Image Tagger</h1>
+      <InputGroup label='API Key' onChange={setUsername} />
+      <InputGroup label='API Secret' onChange={setPassword} />
       <section
-        onDragOver={onDragOver}
-        onDrop={onDrop}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -47,34 +62,20 @@ function App() {
           gap: '0.5rem',
         }}
       >
-        {previewUrl ? (
+        <Tags>{tags}</Tags>
+        {imagePreview ? (
           <>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
               <button onClick={onGenerateTags}>Generate Tags</button>
               <button onClick={onCancel}>Cancel</button>
             </div>
-            <span> {image.name} </span>
-            <img src={previewUrl} alt='image' />
+            <span> {file.name} </span>
+            <img src={imagePreview} alt='image' style={{ width: '90vmin' }} />
           </>
         ) : (
-          <div
-            style={{
-              border: 'dashed',
-              borderRadius: '1rem',
-              padding: '1rem',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <button onClick={onUploadButtonClick}>+ Add File</button>
-            <h3>Or drag the file and drop here</h3>
-          </div>
+          <FileInput onChange={handleFile} />
         )}
       </section>
     </div>
   );
 }
-
-export default App;
