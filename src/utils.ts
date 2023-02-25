@@ -18,6 +18,6 @@ export const blobToBase64 = async (imageUrl: string) => {
   }
 };
 
-export const extractTags = (imaggaResponse: Object) => {
-  return imaggaResponse.result.tags.map((tagObj) => tagObj.tag.en);
+export const extractTags = (imaggaResponse: any) => {
+  return imaggaResponse.result.tags.map((tagObj: any) => tagObj.tag.en);
 };

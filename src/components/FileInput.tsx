@@ -22,7 +22,7 @@ export default function FileInput({ onChange }: { onChange: Function }) {
     >
       <input
         type='file'
-        onChange={(e) => onChange(e.target.files[0])}
+        onChange={(e: any) => onChange(e.target.files[0])}
         accept='image/*'
         style={{}}
       />

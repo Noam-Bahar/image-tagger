@@ -16,6 +16,7 @@ export const getTags = async (
 
     const response = await fetch('https://api.imagga.com/v2/tags', {
       method: 'POST',
+      // @ts-ignore
       body: formData,
       headers: {
         Authorization: `Basic ${credentials}`,
