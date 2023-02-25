@@ -15,17 +15,17 @@ export default function App() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const [file, setFile] = useState<Object>({});
+  const [file, setFile] = useState<Blob>(new Blob());
   const [imagePreview, setImagePreview] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
 
-  const handleFile = (file: Object) => {
+  const handleFile = (file: Blob) => {
     setFile(file);
     setImagePreview(URL.createObjectURL(file));
   };
 
   const onCancel = () => {
-    setFile({});
+    setFile(new Blob());
     setImagePreview('');
     setTags([]);
   };
