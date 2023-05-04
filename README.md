@@ -1,4 +1,4 @@
-# image-tagger
+# image-tagger https://noam-bahar.github.io/image-tagger/
 An easy to use UI for tagging an image using Imagga's image tagging API.
 
 ## Usage:
